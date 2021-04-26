@@ -1,6 +1,7 @@
 # Exemplo PostgreSQL
 
-# Table of Contents
+### Índice
+
 1. [Sobre](#sobre)
 2. [Criando o banco de dados](#l1)
 3. [Criando tabela de usuários](#l2)
@@ -16,7 +17,7 @@
 
 ### Sobre
 
-Este é um exemplo de um projeto de banco de dados PostgreSQL, neste projeto é exemplificado algumas das ações mais comuns ao se usar um banco de dados Postgres, ações como criar tabelas, inserir dados em tabelas, criar e utilizar views, assim como criar e utilizar funções plpgsql.
+Este é um exemplo de um projeto de banco de dados [PostgreSQL](https://www.postgresql.org), neste projeto é exemplificado algumas das ações mais comuns ao se usar um banco de dados Postgres, ações como **criar tabelas, inserir dados em tabelas, criar e utilizar views, assim como criar e utilizar funções plpgsql**.
 
 
 
@@ -24,7 +25,7 @@ Este é um exemplo de um projeto de banco de dados PostgreSQL, neste projeto é 
 
 <div id='l1'/>
 
-### 1.Criando o banco de dados (e schema)
+### 1. Criando o banco de dados (e schema)
 
 Cria o banco de dados de nome DataBaseDeTeste e atribui ao usuário postgres. Depois cria um novo schema de nome empresadb, que irá conter nossas tabelas.
 
@@ -45,9 +46,9 @@ CREATE SCHEMA "empresadb"
 
 <div id='l2'/>
 
-###  2.Criando tabela de usuários
+###  2. Criando tabela de usuários
 
-Cria a primeira tabela, que irá conter os dados sobre o usuário. Para usar como exemplo esta tabela terá as colunas: id, username,rg,cpf,nascimento e sexo. Onde apenas a coluna "sexo" não é obrigatória, e as colunas rg e cpf precisam ser únicas, ou seja, o banco não irá aceitar um INSERT INTO onde o rg ou cpf já constem no banco de dados, prevenindo o cadastro de dois usuários com o mesmo rg/cpf.
+Cria a primeira tabela, que irá conter os dados sobre o usuário. Para usar como exemplo esta tabela terá as colunas: **id, username,rg,cpf,nascimento e sexo**. Onde apenas a coluna "sexo" não é obrigatória, e as colunas rg e cpf precisam ser únicas, ou seja, o banco não irá aceitar um INSERT INTO onde o rg ou cpf já constem no banco de dados, prevenindo o cadastro de dois usuários com o mesmo rg/cpf.
 
 ```
 CREATE TABLE empresadb."users"
@@ -66,7 +67,7 @@ CREATE TABLE empresadb."users"
 
 <div id='l3'/>
 
-### 3.Inserindo dados na tabela usuário
+### 3. Inserindo dados na tabela usuário
 
 Agora inserimos alguns cadastros de usuário na tabela, repare que a coluna users.id é omitida, já que é um campo SERIAL e não é obrigatório a passagem de um valor para ela.
 
@@ -99,7 +100,7 @@ VALUES ('Jon','77.777.747-87','877.867.677-57','2004-09-10','Masculino');
 
 <div id='l4'/>
 
-### 4.Criando uma view
+### 4. Criando uma view
 
 Aqui um exemplo da criação de uma view simples, que faz um SELECT do banco de dados que acabamos de criar, retornando o id, o username e o nascimento registrados na tabela users.
 As views são uma ótima ferramenta de segurança, impedindo que a pessoa que executa a query acesse os dados diretamente do banco de dados, servindo como uma intercessora entre a requisição e o banco. 
@@ -117,7 +118,7 @@ ALTER TABLE empresadb."idadeusers"
 
 <div id='l5'/>
 
-### 5.SELECTs de exemplo
+### 5. SELECTs de exemplo
 
 Agora podemos fazer alguns SELECTs nessa tabela, para observarmos os resultados.
 
@@ -148,9 +149,9 @@ SELECT * FROM empresadb.idadeusers;
 
 <div id='l6'/>
 
-### 6.Criando a tabela contas
+### 6. Criando a tabela contas
 
-Agora vamos criar uma segunda tabela e inserir alguns cadastros nela, para que possamos realizar alguns JOINs.
+Agora vamos criar uma segunda tabela e inserir alguns cadastros nela, para que possamos realizar um JOIN.
 
 
 
@@ -198,10 +199,10 @@ select * from empresadb.contas;
 
 <div id='l7'/>
 
-### 7.Criando view saldo usuário
+### 7. Criando view saldo usuário
 
-Cria uma view que retorna os dados do usuário, especificamente seu id, seu nome, seu cpf, o numero da sua conta e o seu saldo.
-Os resultados são organizados com base no saldo da conta, do maior valor para o menor. Repare que é usado o alias **u** para se referia a tabela **users**, e **c** para se referir a tabela **contas**.
+Cria uma view que através de um INNER JOIN ou somente JOIN, retorna os dados das tabelas **users** e **contas**, especificamente seu users.id, users.username,users.cpf,contas.numconta e contas.saldo.
+Os resultados são organizados com base no saldo da conta, do maior valor para o menor graças a opção **desc** de decrescente. Repare que é usado o alias **u** para se referia a tabela **users**, e **c** para se referir a tabela **contas**.
 
 ```
 --Cria view saldousers.
@@ -211,18 +212,19 @@ AS
 SELECT u.id,u.username,u.cpf,c.numconta,c.saldo from empresadb.users u LEFT JOIN
 empresadb.contas c on c.userdoc =  u.cpf order by c.saldo desc;
 
---Testa view criada.
+```
 
+Testa view criada:
+
+```
 select * from empresadb.saldousers;
 ```
 
-
-
 <div id='l8'/>
 
-### 8.Criando funções
+### 8. Criando funções
 
-Agora vamos para uma parte um pouco mais avançada, vamos criar funções, é importante lembrar que o postgresql aceita funções feitas em várias linguagens, como Java, Python, Javascript e etc. Mas neste exemplo iremos utilizar a linguagem PLPGSQL.  Nesta função, iremos verificar qual o usuário/cliente com o maior saldo em sua conta, e daremos um retorno no formato TEXT, que será composto pela String **"O cliente com o maior saldo é:: "**+ o nome do usuário, repare também na variável **nameuser** do tipo TEXT que armazena o resultado de um SELECT que retorna o nome do usuário que, com base na view saldousers, tem o maior saldo registrado em sua conta. Ainda especificados a linguagem usada na função, neste caso **plpgsql** e com **security definer**, que esta função deve ser executada com as credenciais do usuário que a criou.
+Agora vamos para uma parte um pouco mais avançada, vamos criar funções, é importante lembrar que o postgresql aceita funções feitas em várias linguagens, como Java, Python, Javascript e etc. Mas neste exemplo iremos utilizar a linguagem PLPGSQL.  Nesta função, iremos verificar qual o usuário/cliente com o maior saldo em sua conta, e daremos um retorno no formato TEXT, que será composto pela String **"O cliente com o maior saldo é:: "**+ o nome do usuário, repare também na variável **nameuser** do tipo TEXT que armazena o resultado de um SELECT que retorna o nome do usuário que, com base na view saldousers, tem o maior saldo registrado em sua conta. Ainda especificamos a linguagem usada na função, neste caso **plpgsql**, e com **security definer**, dizemos que esta função quando executada (por qualquer usuário), terá as permissões e credenciais do usuário que a criou, diferente de **security invoker** que atribui a função, as permissões e credenciais de quem a invoca/executa.
 
 **Repare que nesta função é usada a view saldousers que acabamos de criar.**
 
