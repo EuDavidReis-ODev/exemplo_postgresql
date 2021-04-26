@@ -1,0 +1,74 @@
+	CREATE TABLE empresadb."contas"
+(
+    id serial NOT NULL,
+    userdoc character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    numconta character varying(30) COLLATE pg_catalog."default" NOT NULL UNIQUE,
+    saldo character varying(30) COLLATE pg_catalog."default" NOT NULL UNIQUE,
+    criacao date NOT NULL,
+    CONSTRAINT "conta_pkey" PRIMARY KEY (id),
+	CONSTRAINT "user_fk" foreign key (userdoc) references empresadb.users (cpf)
+);
+
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('238.245.456-24','1111-5555-8888',20.50, current_date );
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('548.224.416-53','5555-9999-8888',230.43, current_date);
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('218.264.156-94','1111-5545-8888',578.60, current_date);
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('168.284.396-29','5456-3452-6784',20880.00, current_date);
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('568.234.456-54','2345-7573-3782',1240.00, current_date);
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('333.333.333-22','5327-5784-2874',5670.65, current_date);
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('568.234.777-54','2467-5555-7352',1000.00, current_date);
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('668.111.222-54','1463-6261-7824',430.20, current_date);
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('877.866.666-52','5163-4131-1335',432.54, current_date);
+insert into empresadb.contas (userdoc,numconta,saldo,criacao)
+values ('877.867.677-57','1566-1255-4135',6776.32, current_date);
+
+select * from empresadb.contas;
+
+--Cria uma view que retorna alguns dados do usário, seu saldo, e o numero de sua conta.
+--organiza os resultados com base no saldo da conta, do maior valor para o menor.
+create or replace view empresadb."saldousers"
+as
+select u.id,u.username,u.cpf,c.numconta,c.saldo from empresadb.users u left join
+empresadb.contas c on c.userdoc =  u.cpf order by c.saldo desc;
+select * from empresadb.saldousers;
+
+--Cria uma função que informa qual o cliente com maior saldo.
+create or replace function empresadb.usermaisrico() returns text
+as $$
+declare nameuser text;
+declare maiorsaldo double precision;
+	begin
+		select username from empresadb.saldousers 
+		where saldo = (select max(saldo) from empresadb.saldousers) into nameuser;
+		return 'O cliente com maior saldo é:: '|| nameuser;
+	end;
+$$ language plpgsql
+security definer;
+--Confere resultado da função
+select empresadb.usermaisrico();
+
+--Cria uma função que informa qual o cliente com menor saldo.
+create or replace function empresadb.usermaispobre() returns text
+as $$
+	declare nameuser text;
+	declare menorsaldo double precision;
+	begin
+		select username from empresadb.saldousers
+		where saldo = (select min(saldo) from empresadb.saldousers) into nameuser;
+		return 'O cliente com menor saldo é:: '|| nameuser;
+	end;
+$$ language plpgsql
+security definer;
+--Confere resultado da função
+select empresadb.usermaispobre();
+
+
+
