@@ -5,10 +5,10 @@
 2. [Criando o banco de dados](#l1)
 3. [Criando tabela de usuários](#l2)
 4. [Inserindo dados na tabela usuário](#l3)
-5. [Cria uma view](#l4)
+5. [Criando uma view](#l4)
 6. [SELECTs de exemplo](#l5)
 7. [Criando a tabela contas](#l6)
-8. [Cria view saldo usuário](#l7)
+8. [Criando view saldo usuário](#l7)
 9. [Criando funções](#l8)
 
    
