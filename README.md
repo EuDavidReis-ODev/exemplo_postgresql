@@ -99,10 +99,10 @@ VALUES ('Jon','77.777.747-87','877.867.677-57','2004-09-10','Masculino');
 
 <div id='l4'/>
 
-### 4.Cria uma view
+### 4.Criando uma view
 
 Aqui um exemplo da criação de uma view simples, que faz um SELECT do banco de dados que acabamos de criar, retornando o id, o username e o nascimento registrados na tabela users.
-As views são uma ótima ferramenta de segurança, impedindo de a pessoa que executa a query acesse os dados diretamente do banco de dados, servindo como uma intercessora entre o a requisição e o banco. 
+As views são uma ótima ferramenta de segurança, impedindo que a pessoa que executa a query acesse os dados diretamente do banco de dados, servindo como uma intercessora entre a requisição e o banco. 
 
 ```
 CREATE OR REPLACE VIEW empresadb."idadeusers"
@@ -198,7 +198,7 @@ select * from empresadb.contas;
 
 <div id='l7'/>
 
-### 7.Cria view saldo usuário
+### 7.Criando view saldo usuário
 
 Cria uma view que retorna os dados do usuário, especificamente seu id, seu nome, seu cpf, o numero da sua conta e o seu saldo.
 Os resultados são organizados com base no saldo da conta, do maior valor para o menor. Repare que é usado o alias **u** para se referia a tabela **users**, e **c** para se referir a tabela **contas**.
